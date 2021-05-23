@@ -121,7 +121,7 @@ T = [['.....',
 
 shapes = [S, Z, I, O, J, L, T]
 shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
-# index dua tren shapes cua 
+# index dua tren shapes
 
 class Piece(object):
     rows = 20  # y
@@ -143,3 +143,4 @@ def create_grid(locked_positions={}):
                 c = locked_positions[(j,i)]
                 grid[i][j] = c
     return grid
+
