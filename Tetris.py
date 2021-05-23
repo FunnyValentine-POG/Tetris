@@ -145,24 +145,23 @@ def create_grid(locked_positions={}):
     return grid
 
 def get_shape():
-      return rd.choice(shapes)  #chon shapes rot xuong 
+      return Piece(5,0,rd.choice(shapes))  #chon shapes rot xuong 
 
 def draw_grid(surface,grid):
-      
-
       for i in range(len(grid)):
             for j in range(len(grid[i])):
                   pygame.draw.rect(surface,grid[i][j],(top_left_x+j*block_size,top_left_y+i*block_size,block_size,block_size),0)
       
       pygame.draw.rect(surface,(255,0,0),(top_left_x,top_left_y,play_width,play_height),4) #ve khung cua game (mau do)
       
-      
+def valid_space():
+      pass      
 
 def draw_window(surface,grid):
-      surface.fill((0,0,0))  #fill mau nen game (default la mau den) 
+      surface.fill((100,115,1))  #fill mau nen game (default la mau den) 
 
       pygame.font.init()
-      font = pygame.font.SysFont('Comic Sans',60) #chinh font game 
+      font = pygame.font.SysFont('Tetris',60) #chinh font game 
       label = font.render('Tetris', 1, (255,255,255)) #ten game la Tetris
 
       surface.blit(label,(top_left_x+play_width/2 - (label.get_width()/2),block_size)) #chinh chu Tetris chinh giua game
@@ -190,12 +189,20 @@ def main(win):
                   if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_LEFT:
                               current_piece.x -= 1
+                              if not(valid_space(current_piece,grid)):
+                                    current_piece +=1
                         if event.key == pygame.K_RIGHT:
                               current_piece.x += 1
+                              if not(valid_space(current_piece,grid)):
+                                    current_piece -=1
                         if event.key == pygame.K_DOWN:
                               current_piece.y += 1
+                              if not(valid_space(current_piece,grid)):
+                                    current_piece.y -=1
                         if event.key == pygame.K_UP:
                               current_piece.rotation += 1
+                              if not(valid_space(current_piece,grid)):
+                                    current_piece -=1
 
             draw_window(win,grid)
 
