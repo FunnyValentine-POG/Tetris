@@ -148,11 +148,25 @@ def create_grid(locked_positions={}):
 def get_shape():
       return rd.choice(shapes)  #chon shapes rot xuong 
 
-def draw_grid(surface):
-      surface.fill((0,0,0))  #ve khung cua game 
+def draw_grid(surface,grid):
+      
+
+      for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                  pygame.draw.rect(surface,grid[i][j],(top_left_x+j*block_size,top_left_y+i*block_size,block_size,block_size),0)
+      
+      pygame.draw.rect(surface,(255,0,0),(top_left_x,top_left_y,play_width,play_height),4) #ve khung cua game (mau do)
+      
+      
+
+def draw_window(surface,grid):
+      surface.fill((0,0,0))  #fill mau nen game (default la mau den) 
 
       pygame.font.init()
       font = pygame.font.sysFont('comicsans',60) #chinh font game 
       label = font.render('Tetris', 1, (255,255,255)) #ten game la Tetris
 
-      surface.blit(label,(top_left_x+play_width/2)) #chinh chu Tetris chinh giua game 
+      surface.blit(label,(top_left_x+play_width/2)) #chinh chu Tetris chinh giua game
+
+      draw_grid(surface,grid)
+      pygame.display.update()
