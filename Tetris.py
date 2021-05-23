@@ -7,11 +7,11 @@ pygame.font.init()
 
 s_width = 800
 s_height = 700
-play_width = 300  #chieu rong khung game 
+play_width = 300  #chieu rong khung game   chieu rong 
 play_height = 600  # chieu dai khung game
 block_size = 30
 
-top_left_x = (s_width - play_width) // 2
+top_left_x = (s_width - play_width) // 2 #khu vuc choi cua game
 top_left_y = s_height - play_height
 
 
@@ -135,9 +135,9 @@ class Piece(object):
         self.rotation = 0  # dieu chinh sau bang nut mui ten len 
 
 def create_grid(locked_positions={}):
-    grid = [[(0,0,0) for x in range(10)] for x in range(20)]
+    grid = [[(0,0,0) for x in range(10)] for x in range(20)] #tuong trung cho 10 mau, 20 row 
  
-    for i in range(len(grid)):
+    for i in range(len(grid)):  #20 row
         for j in range(len(grid[i])):
             if (j,i) in locked_positions:
                 c = locked_positions[(j,i)]
