@@ -1,6 +1,7 @@
 import pygame, sys
+from pygame import font
 from pygame.locals import *
-import random
+import random as rd
 
 
 pygame.font.init()
@@ -144,3 +145,14 @@ def create_grid(locked_positions={}):
                 grid[i][j] = c
     return grid
 
+def get_shape():
+      return rd.choice(shapes)  #chon shapes rot xuong 
+
+def draw_grid(surface):
+      surface.fill((0,0,0))  #ve khung cua game 
+
+      pygame.font.init()
+      font = pygame.font.sysFont('comicsans',60) #chinh font game 
+      label = font.render('Tetris', 1, (255,255,255)) #ten game la Tetris
+
+      surface.blit(label,(top_left_x+play_width/2)) #chinh chu Tetris chinh giua game 
