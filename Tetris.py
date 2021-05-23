@@ -3,12 +3,14 @@ from pygame import font
 from pygame.locals import *
 import random as rd
 
+from pygame.time import Clock
+
 
 pygame.font.init()
 
 s_width = 800
 s_height = 700
-play_width = 300  #chieu rong khung game   chieu rong 
+play_width = 300  #chieu rong khung game    
 play_height = 600  # chieu dai khung game
 block_size = 30
 
@@ -125,12 +127,9 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 16
 # index dua tren shapes
 
 class Piece(object):
-    rows = 20  # y
-    columns = 10  # x
- 
-    def __init__(self, column, row, shape):
-        self.x = column
-        self.y = row
+    def __init__(self, x, y, shape):
+        self.x = x
+        self.y = y
         self.shape = shape
         self.color = shape_colors[shapes.index(shape)] # index dua tren shapes cua 
         self.rotation = 0  # dieu chinh sau bang nut mui ten len 
@@ -163,10 +162,47 @@ def draw_window(surface,grid):
       surface.fill((0,0,0))  #fill mau nen game (default la mau den) 
 
       pygame.font.init()
-      font = pygame.font.sysFont('comicsans',60) #chinh font game 
+      font = pygame.font.SysFont('Comic Sans',60) #chinh font game 
       label = font.render('Tetris', 1, (255,255,255)) #ten game la Tetris
 
-      surface.blit(label,(top_left_x+play_width/2)) #chinh chu Tetris chinh giua game
+      surface.blit(label,(top_left_x+play_width/2 - (label.get_width()/2),block_size)) #chinh chu Tetris chinh giua game
 
       draw_grid(surface,grid)
       pygame.display.update()
+
+def main(win):
+
+      locked_postitions = {}
+      grid = create_grid(locked_postitions)
+
+      change_piece = False
+      run = True
+      current_piece = get_shape()
+      next_piece = get_shape()
+      clock = pygame.time.Clock()
+      fall_time = 0
+
+      while run:
+            for event in pygame.event.get():
+                  if event.type ==pygame.QUIT:
+                        run = False
+
+                  if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT:
+                              current_piece.x -= 1
+                        if event.key == pygame.K_RIGHT:
+                              current_piece.x += 1
+                        if event.key == pygame.K_DOWN:
+                              current_piece.y += 1
+                        if event.key == pygame.K_UP:
+                              current_piece.rotation += 1
+
+            draw_window(win,grid)
+
+def main_menu(win):
+      main(win)
+
+win = pygame.display.set_mode((s_width, s_height))
+pygame.display.set_caption('Tetris')
+main_menu(win)
+
