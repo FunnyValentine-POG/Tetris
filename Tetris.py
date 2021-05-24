@@ -156,7 +156,6 @@ def draw_grid(surface,grid): #ve khung mau xam o ben trong game
             for j in range(len(grid[i])):
                   pygame.draw.line(surface,(128,128,128),(start_x+j*block_size,start_y),(start_x+j*block_size,start_y+play_height)) #ve truc tung 
       
-  
 
 def draw_window(surface,grid):
       surface.fill((100,115,1))  #fill mau nen game (default la mau den) 
@@ -176,7 +175,7 @@ def draw_window(surface,grid):
       draw_grid(surface,grid)
       pygame.display.update()
 
-def convert_shape_format(shape): 
+def convert_shape_format(shape): #convert shape theo thu tu cua function shape
     positions = []
     format = shape.shape[shape.rotation % len(shape.shape)] #theo so thu tu shape 1-4
  
@@ -191,17 +190,22 @@ def convert_shape_format(shape):
  
     return positions
 
-def valid_space(shape, grid):
+def valid_space(shape, grid): #kiem tra no di chuyen vao ko gian hop le
     accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
     accepted_positions = [j for sub in accepted_positions for j in sub]
-    formatted = convert_shape_format(shape)
  
-    for pos in formatted:
+    for pos in convert_shape_format(shape):
         if pos not in accepted_positions:
             if pos[1] > -1:
                 return False
- 
     return True    
+
+def check_lost(postions):
+      for pos in postions:
+            x, y = pos
+            if y<1:
+                  return True
+      return False
 
 def main(win):
 
@@ -214,8 +218,19 @@ def main(win):
       next_piece = get_shape()
       clock = pygame.time.Clock()
       fall_time = 0
-
+      fall_speed = 0.30
       while run:
+            grid = create_grid(locked_postitions)
+            fall_time += clock.get_rawtime()
+            clock.tick()
+
+            if fall_time/1000 >fall_speed:
+                  fall_time=0
+                  current_piece.y += 1 
+                  if not(valid_space(current_piece,grid)) and current_piece.y>0: #check neu ko co nam ben ngoai khung game hay ko 
+                        current_piece.y -=1
+                        change_piece = True
+
             for event in pygame.event.get():
                   if event.type ==pygame.QUIT:
                         run = False
