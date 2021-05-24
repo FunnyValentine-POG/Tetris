@@ -156,8 +156,7 @@ def draw_grid(surface,grid): #ve khung mau xam o ben trong game
             for j in range(len(grid[i])):
                   pygame.draw.line(surface,(128,128,128),(start_x+j*block_size,start_y),(start_x+j*block_size,start_y+play_height)) #ve truc tung 
       
-def valid_space():
-      pass      
+  
 
 def draw_window(surface,grid):
       surface.fill((100,115,1))  #fill mau nen game (default la mau den) 
@@ -176,6 +175,33 @@ def draw_window(surface,grid):
 
       draw_grid(surface,grid)
       pygame.display.update()
+
+def convert_shape_format(shape): 
+    positions = []
+    format = shape.shape[shape.rotation % len(shape.shape)] #theo so thu tu shape 1-4
+ 
+    for i, line in enumerate(format):
+        row = list(line)
+        for j, column in enumerate(row):
+            if column == '0':
+                positions.append((shape.x + j, shape.y + i))
+ 
+    for i, pos in enumerate(positions):
+        positions[i] = (pos[0] - 2, pos[1] - 4)
+ 
+    return positions
+
+def valid_space(shape, grid):
+    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
+    accepted_positions = [j for sub in accepted_positions for j in sub]
+    formatted = convert_shape_format(shape)
+ 
+    for pos in formatted:
+        if pos not in accepted_positions:
+            if pos[1] > -1:
+                return False
+ 
+    return True    
 
 def main(win):
 
