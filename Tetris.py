@@ -147,12 +147,14 @@ def create_grid(locked_positions={}):
 def get_shape():
       return Piece(5,0,rd.choice(shapes))  #chon shapes rot xuong 
 
-def draw_grid(surface,grid):
+def draw_grid(surface,grid): #ve khung mau xam o ben trong game 
+      start_x = top_left_x
+      start_y = top_left_y
+
       for i in range(len(grid)):
+            pygame.draw.line(surface,(128,128,128), (start_x,start_y+i*block_size),(start_x+play_width,start_y+i*block_size)) #ve truc hoanh 
             for j in range(len(grid[i])):
-                  pygame.draw.rect(surface,grid[i][j],(top_left_x+j*block_size,top_left_y+i*block_size,block_size,block_size),0)
-      
-      pygame.draw.rect(surface,(255,0,0),(top_left_x,top_left_y,play_width,play_height),4) #ve khung cua game (mau do)
+                  pygame.draw.line(surface,(128,128,128),(start_x+j*block_size,start_y),(start_x+j*block_size,start_y+play_height)) #ve truc tung 
       
 def valid_space():
       pass      
@@ -165,6 +167,12 @@ def draw_window(surface,grid):
       label = font.render('Tetris', 1, (255,255,255)) #ten game la Tetris
 
       surface.blit(label,(top_left_x+play_width/2 - (label.get_width()/2),block_size)) #chinh chu Tetris chinh giua game
+
+      for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                  pygame.draw.rect(surface,grid[i][j],(top_left_x+j*block_size,top_left_y+i*block_size,block_size,block_size),0)
+      
+      pygame.draw.rect(surface,(255,0,0),(top_left_x,top_left_y,play_width,play_height),4) #ve khung cua game (mau do)
 
       draw_grid(surface,grid)
       pygame.display.update()
