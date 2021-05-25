@@ -94,8 +94,8 @@ while status:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             status = False
-        '''if event.type == tetroromino_down:
-            character.update(1,0)'''
+        if event.type == tetroromino_down:
+            character.update(1,0)
         if event.type == speedup:
             speed = int (speed * 0.9)
             pygame.time.set_timer(tetroromino_down,speed)
