@@ -10,7 +10,7 @@ pygame.init()
 width, columns, rows = 400, 10, 20
 distance = width // columns
 height = distance*rows
-
+speed = 500
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
 
@@ -25,7 +25,10 @@ pygame.display.set_caption('Tetris Game')
 
 #tạo sự kiện 
 tetroromino_down = pygame.USEREVENT +1
-pygame.time.set_timer(tetroromino_down,500)
+speedup = pygame.USEREVENT +2
+pygame.time.set_timer(tetroromino_down,speed)
+pygame.time.set_timer(speedup,3000)
+pygame.key.set_repeat(1,100) #nhan key
 
 # tetrorominos: O, I, J, L, S, Z, T
 tetrorominos = [
@@ -56,7 +59,12 @@ class tetroromino():
     def update(self,r,c):
         self.row += r
         self.column += c
-                
+
+    def Rotation(self): #xoay cac khoi
+        savetetro = self.tetro.copy()
+        for n, color in enumerate(savetetro):
+            self.tetro[(2-(n%4))*4+(n//4)] = color 
+
 character = tetroromino(tetrorominos[2])
 
 
@@ -68,7 +76,18 @@ while status:
             status = False
         if event.type == tetroromino_down:
             character.update(1,0)
-            
+        if event.type == speedup:
+            speed = int (speed * 0.9)
+            pygame.time.set_timer(tetroromino_down,speed)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                character.update(0,-1)
+            if event.key == pygame.K_RIGHT:
+                character.update(0,1)
+            if event.key == pygame.K_DOWN:
+                character.update(1,0)
+    
+
     # background color
     screen.fill((128,128,128))
     character.show()
