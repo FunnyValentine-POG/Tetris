@@ -1,278 +1,82 @@
+import time
+from dataclasses import dataclass
 import pygame, sys
 from pygame import font
 from pygame.locals import *
 import random as rd
-
 from pygame.time import Clock
 
+pygame.init()
+width, columns, rows = 400, 10, 20
+distance = width // columns
+height = distance*rows
 
-pygame.font.init()
+#tạo lưới cho giao diện 
+grid = [0]*columns*rows
 
-s_width = 800
-s_height = 700
-play_width = 300  #chieu rong khung game    
-play_height = 600  # chieu dai khung game
-block_size = 30
+#load picture 
+picture = []
+for n in range(8):
+    picture.append(pygame.transform.scale(pygame.image.load(f'T_0/T_{n}.jpg'),(distance,distance)))
 
-top_left_x = (s_width - play_width) // 2 #khu vuc choi cua game
-top_left_y = s_height - play_height
+# tạo khung (màng hình) trò chơi 
+screen = pygame.display.set_mode([width,height])
+pygame.display.set_caption('Tetris Game')
+
+# create event
+tetroromino_down = pygame.USEREVENT + 1
+pygame.time.set_timer(tetroromino_down,500)
+# tetrorominos: O, I, J, L, S, Z, T
+tetrorominos = [
+                [0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0], # O
+                [0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0], # I
+                [0,0,0,0,3,3,3,0,0,0,3,0,0,0,0,0], # J
+                [0,0,4,0,4,4,4,0,0,0,0,0,0,0,0,0], # L
+                [0,5,5,0,5,5,0,0,0,0,0,0,0,0,0,0], # S
+                [6,6,0,0,0,6,6,0,0,0,0,0,0,0,0,0], # Z
+                [0,0,0,0,7,7,7,0,0,7,0,0,0,0,0,0]  # T
+                ] 
+
+# tạo lớp và định nghĩa hàm
+@dataclass
+class tetroromino():
+    tetro : list 
+    row : int = 0
+    column : int = 5 # tọa độ (vị trí xuất hiện lần đầu)
+    
+    
+    def show(self):
+        for n, color in enumerate(self.tetro):
+            if color > 0 :
+                x = (self.column + n % 4) * distance
+                y = (self.column + n // 4) * distance
+                screen.blit(picture[color],(x,y))
+                
+    def update(self,r,c):
+        self.row += r
+        self.column += c
+                
+character = tetroromino(tetrorominos[2])
 
 
-# Hinh dang khoi block
+status = True
+while status:
+    pygame.time.delay(100)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            status = False
+        if event.type == tetroromino_down:
+            character.update(1,0)
+    # background color
+    screen.fill((128,128,128))
+    character.show()
+    #duyệt các khối màu
+    for n, color in enumerate(grid):
+        if color > 0:
+            x = n % columns * distance
+            y = n // columns * distance
+            screen.blit(picture[color],(x,y))
+    pygame.display.flip()
+pygame.quit()
 
-S = [['.....',
-      '......',
-      '..00..',
-      '.00...',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..00.',
-      '...0.',
-      '.....']]
-
-Z = [['.....',
-      '.....',
-      '.00..',
-      '..00.',
-      '.....'],
-     ['.....',
-      '..0..',
-      '.00..',
-      '.0...',
-      '.....']]
-
-I = [['..0..',
-      '..0..',
-      '..0..',
-      '..0..',
-      '.....'],
-     ['.....',
-      '0000.',
-      '.....',
-      '.....',
-      '.....']]
-
-O = [['.....',
-      '.....',
-      '.00..',
-      '.00..',
-      '.....']]
-
-J = [['.....',
-      '.0...',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..00.',
-      '..0..',
-      '..0..',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '...0.',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..0..',
-      '.00..',
-      '.....']]
-
-L = [['.....',
-      '...0.',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..0..',
-      '..00.',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '.0...',
-      '.....'],
-     ['.....',
-      '.00..',
-      '..0..',
-      '..0..',
-      '.....']]
-
-T = [['.....',
-      '..0..',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..00.',
-      '..0..',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '..0..',
-      '.....'],
-     ['.....',
-      '..0..',
-      '.00..',
-      '..0..',
-      '.....']]
-
-shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
-# index dua tren shapes
-
-class Piece(object):
-    def __init__(self, x, y, shape):
-        self.x = x
-        self.y = y
-        self.shape = shape
-        self.color = shape_colors[shapes.index(shape)] # index dua tren shapes cua 
-        self.rotation = 0  # dieu chinh sau bang nut mui ten len 
-
-def create_grid(locked_positions={}):
-    grid = [[(0,0,0) for x in range(10)] for x in range(20)] #tuong trung cho 10 mau, 20 row 
- 
-    for i in range(len(grid)):  #20 row
-        for j in range(len(grid[i])):
-            if (j,i) in locked_positions:
-                c = locked_positions[(j,i)]
-                grid[i][j] = c
-    return grid
-
-def get_shape():
-      return Piece(5,0,rd.choice(shapes))  #chon shapes rot xuong 
-
-def draw_grid(surface,grid): #ve khung mau xam o ben trong game 
-      start_x = top_left_x
-      start_y = top_left_y
-
-      for i in range(len(grid)):
-            pygame.draw.line(surface,(128,128,128), (start_x,start_y+i*block_size),(start_x+play_width,start_y+i*block_size)) #ve truc hoanh 
-            for j in range(len(grid[i])):
-                  pygame.draw.line(surface,(128,128,128),(start_x+j*block_size,start_y),(start_x+j*block_size,start_y+play_height)) #ve truc tung 
-      
-
-def draw_window(surface,grid):
-      surface.fill((100,115,1))  #fill mau nen game (default la mau den) 
-
-      pygame.font.init()
-      font = pygame.font.SysFont('Tetris',60) #chinh font game 
-      label = font.render('Tetris', 1, (255,255,255)) #ten game la Tetris
-
-      surface.blit(label,(top_left_x+play_width/2 - (label.get_width()/2),block_size)) #chinh chu Tetris chinh giua game
-
-      for i in range(len(grid)):
-            for j in range(len(grid[i])):
-                  pygame.draw.rect(surface,grid[i][j],(top_left_x+j*block_size,top_left_y+i*block_size,block_size,block_size),0)
-      
-      pygame.draw.rect(surface,(255,0,0),(top_left_x,top_left_y,play_width,play_height),4) #ve khung cua game (mau do)
-
-      draw_grid(surface,grid)
-      pygame.display.update()
-
-def convert_shape_format(shape): #convert shape theo thu tu cua function shape
-    positions = []
-    format = shape.shape[shape.rotation % len(shape.shape)] #theo so thu tu shape 1-4
- 
-    for i, line in enumerate(format):
-        row = list(line)
-        for j, column in enumerate(row):
-            if column == '0':
-                positions.append((shape.x + j, shape.y + i))
- 
-    for i, pos in enumerate(positions):
-        positions[i] = (pos[0] - 2, pos[1] - 4)
- 
-    return positions
-
-def valid_space(shape, grid): #kiem tra no di chuyen vao ko gian hop le
-    accepted_positions = [[(j, i) for j in range(10) if grid[i][j] == (0,0,0)] for i in range(20)]
-    accepted_positions = [j for sub in accepted_positions for j in sub]
- 
-    for pos in convert_shape_format(shape):
-        if pos not in accepted_positions:
-            if pos[1] > -1:
-                return False
-    return True    
-
-def check_lost(postions):
-      for pos in postions:
-            x, y = pos
-            if y<1:
-                  return True
-      return False
-
-def main(win):
-
-      locked_postitions = {}
-      grid = create_grid(locked_postitions)
-
-      change_piece = False
-      run = True
-      current_piece = get_shape()
-      next_piece = get_shape()
-      clock = pygame.time.Clock()
-      fall_time = 0
-      fall_speed = 0.30
-      while run:
-            grid = create_grid(locked_postitions)
-            fall_time += clock.get_rawtime()
-            clock.tick()
-
-            if fall_time/1000 >fall_speed:
-                  fall_time=0
-                  current_piece.y += 1 
-                  if not(valid_space(current_piece,grid)) and current_piece.y>0: #check neu ko co nam ben ngoai khung game hay ko 
-                        current_piece.y -=1
-                        change_piece = True
-
-            for event in pygame.event.get():
-                  if event.type ==pygame.QUIT:
-                        run = False
-
-                  if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_LEFT:
-                              current_piece.x -= 1
-                              if not(valid_space(current_piece,grid)):
-                                    current_piece +=1
-                        if event.key == pygame.K_RIGHT:
-                              current_piece.x += 1
-                              if not(valid_space(current_piece,grid)):
-                                    current_piece -=1
-                        if event.key == pygame.K_DOWN:
-                              current_piece.y += 1
-                              if not(valid_space(current_piece,grid)):
-                                    current_piece.y -=1
-                        if event.key == pygame.K_UP:
-                              current_piece.rotation += 1
-                              if not(valid_space(current_piece,grid)):
-                                    current_piece -=1
-            shape_pos = convert_shape_format(current_piece)
-            
-            for i in range(len(shape_pos)):
-                  x,y = shape_pos[i]
-                  if y > -1:
-                        grid[y][x] = current_piece.color
-            if change_piece:
-                  for pos in shape_pos:
-                        p = (pos[0],pos[1])
-                        locked_postitions[p] = current_piece.color
-                  current_piece = next_piece
-                  change_piece = False
-            draw_window(win,grid)
-
-            if check_lost(locked_postitions):
-                  run=False
-      pygame.dispaly.quit()
-def main_menu(win):
-      main(win)
-
-win = pygame.display.set_mode((s_width, s_height))
-pygame.display.set_caption('Tetris')
-main_menu(win)
 
