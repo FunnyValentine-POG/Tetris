@@ -6,6 +6,7 @@ from pygame.locals import *
 import random as rd
 from pygame.time import Clock
 
+global screen
 pygame.init()
 width, columns, rows = 400, 10, 20
 distance = width // columns
@@ -28,7 +29,7 @@ tetroromino_down = pygame.USEREVENT +1
 speedup = pygame.USEREVENT +2
 pygame.time.set_timer(tetroromino_down,speed)
 pygame.time.set_timer(speedup,3000)
-pygame.key.set_repeat(1,100) #nhan key
+pygame.key.set_repeat(500,500) #nhan key
 
 # tetrorominos: O, I, J, L, S, Z, T
 tetrorominos = [
@@ -67,6 +68,12 @@ class tetroromino():
 
 character = tetroromino(tetrorominos[2])
 
+def drawGrid():
+    blockSize = 40 #Set the size of the grid block
+    for x in range(0, width, blockSize):
+        for y in range(0, height, blockSize):
+            rect = pygame.Rect(x, y, blockSize, blockSize)
+            pygame.draw.rect(screen, (128,128,128), rect, 1)
 
 status = True
 while status:
@@ -74,8 +81,8 @@ while status:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             status = False
-        if event.type == tetroromino_down:
-            character.update(1,0)
+        '''if event.type == tetroromino_down:
+            character.update(1,0)'''
         if event.type == speedup:
             speed = int (speed * 0.9)
             pygame.time.set_timer(tetroromino_down,speed)
@@ -86,10 +93,13 @@ while status:
                 character.update(0,1)
             if event.key == pygame.K_DOWN:
                 character.update(1,0)
+            if event.key == pygame.K_UP:
+                character.Rotation()
     
 
     # background color
-    screen.fill((128,128,128))
+    screen.fill((0,0,0))
+    drawGrid()
     character.show()
     #duyệt các khối màu
     for n, color in enumerate(grid):
