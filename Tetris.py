@@ -17,6 +17,15 @@ level = 1
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
 
+font = pygame.font.SysFont("comicsans", 40)
+text = font.render("Game Over !", True, (255, 0, 0))
+
+def gameover():
+	for column in range(columns):			
+		if (grid[column]) > 0:
+			screen.fill((0,0,0))		
+			screen.blit(text,(width//2 - text.get_width()//2,200))
+
 #load picture 
 picture = []
 for n in range(8):
@@ -108,6 +117,7 @@ def drawGrid():
             rect = pygame.Rect(x, y, blockSize, blockSize)
             pygame.draw.rect(screen, (128,128,128), rect, 1)
 
+
 status = True
 while status:
     pygame.time.delay(100)
@@ -119,11 +129,11 @@ while status:
                 game_loop()
                 character = tetroromino(rd.choice(tetrorominos))
                 score += clear_rows()
+            gameover()
         if event.type == speedup:
-            if score % 500 == 0:
+            if score % 500 == 0 and score !=0:
                 speed = int (speed * 0.7)
                 pygame.time.set_timer(tetroromino_down,speed)
-                level += 1
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 character.update(0,-1)
@@ -133,12 +143,12 @@ while status:
                 character.update(1,0)
             if event.key == pygame.K_UP:
                 character.Rotation()
-    
-
     # background color
     screen.fill((0,0,0))
     drawGrid()
     character.show()
+    textsurface = pygame.font.SysFont('ComicSans',30).render("Score: "f'{score:,}',True,(255,255,255))
+    screen.blit(textsurface,(width//2 - textsurface.get_width()//2,10))
     #duyệt các khối màu
     for n, color in enumerate(grid):
         if color > 0:
@@ -146,6 +156,8 @@ while status:
             y = n // columns * distance
             screen.blit(picture[color],(x,y))
     pygame.display.flip()
+
 pygame.quit()
+
 
 
