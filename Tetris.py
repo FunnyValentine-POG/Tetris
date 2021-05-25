@@ -5,6 +5,7 @@ from pygame import font
 from pygame.locals import *
 import random as rd
 from pygame.time import Clock
+from pygame import mixer
 
 global screen
 pygame.init()
@@ -16,7 +17,10 @@ score = 0
 level = 1
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
-
+#BGM
+music = mixer.music.load('Tetris.mp3')
+mixer.music.play(-1)
+#gameover
 font = pygame.font.SysFont("comicsans", 40)
 text = font.render("Game Over !", True, (255, 0, 0))
 
