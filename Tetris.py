@@ -63,7 +63,7 @@ tetrorominos = [
 class tetroromino():
     tetro : list 
     row : int = 0
-    column : int = 1 # tọa độ (vị trí xuất hiện lần đầu)
+    column : int = 4 # tọa độ (vị trí xuất hiện lần đầu)
     
     
     def show(self):
