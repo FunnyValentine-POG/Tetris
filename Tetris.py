@@ -113,7 +113,7 @@ def clear_rows():
             del grid[row * columns : row * columns+column]
             grid[0:0] = [0]*columns
             fullrows +=1
-    return fullrows*100   #set diem la 100 diem
+    return fullrows**2*100   #set diem la 100 diem
 
 def drawGrid():
     blockSize = 40 
