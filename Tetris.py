@@ -23,6 +23,9 @@ for n in range(8):
 screen = pygame.display.set_mode([width,height])
 pygame.display.set_caption('Tetris Game')
 
+#tạo sự kiện 
+tetroromino_down = pygame.USEREVENT +1
+pygame.time.set_timer(tetroromino_down,500)
 
 # tetrorominos: O, I, J, L, S, Z, T
 tetrorominos = [
@@ -63,7 +66,8 @@ while status:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             status = False
-    character.update(1,0)
+        if event.type == tetroromino_down:
+            character.update(1,0)
             
     # background color
     screen.fill((128,128,128))
