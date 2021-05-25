@@ -18,8 +18,9 @@ level = 1
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
 #BGM
-music = mixer.music.load('Tetris.mp3')
+music = mixer.music.load('BGM/Tetris.wav')
 mixer.music.play(-1)
+pygame.mixer.music.set_volume(1000)
 #gameover
 font = pygame.font.SysFont("comicsans", 40)
 text = font.render("Game Over !", True, (255, 0, 0))
