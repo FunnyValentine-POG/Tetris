@@ -20,7 +20,7 @@ grid = [0]*columns*rows
 #BGM
 music = mixer.music.load('BGM/Tetris.wav')
 mixer.music.play(-1)
-pygame.mixer.music.set_volume(1000)
+pygame.mixer.music.set_volume(0.2)
 #gameover
 font = pygame.font.SysFont("comicsans", 40)
 text = font.render("Game Over !", True, (255, 0, 0))
