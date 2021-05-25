@@ -23,9 +23,7 @@ for n in range(8):
 screen = pygame.display.set_mode([width,height])
 pygame.display.set_caption('Tetris Game')
 
-# create event
-tetroromino_down = pygame.USEREVENT + 1
-pygame.time.set_timer(tetroromino_down,500)
+
 # tetrorominos: O, I, J, L, S, Z, T
 tetrorominos = [
                 [0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0], # O
@@ -49,7 +47,7 @@ class tetroromino():
         for n, color in enumerate(self.tetro):
             if color > 0 :
                 x = (self.column + n % 4) * distance
-                y = (self.column + n // 4) * distance
+                y = (self.row + n // 4) * distance
                 screen.blit(picture[color],(x,y))
                 
     def update(self,r,c):
@@ -65,8 +63,8 @@ while status:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             status = False
-        if event.type == tetroromino_down:
-            character.update(1,0)
+    character.update(1,0)
+            
     # background color
     screen.fill((128,128,128))
     character.show()
