@@ -12,6 +12,8 @@ width, columns, rows = 400, 10, 20
 distance = width // columns
 height = distance*rows
 speed = 800
+score = 0
+level = 1
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
 
@@ -47,7 +49,7 @@ tetrorominos = [
 class tetroromino():
     tetro : list 
     row : int = 0
-    column : int = 5 # tọa độ (vị trí xuất hiện lần đầu)
+    column : int = 1 # tọa độ (vị trí xuất hiện lần đầu)
     
     
     def show(self):
@@ -88,13 +90,16 @@ def game_loop():
             grid[(character.row + n//4)*columns +(character.column+n%4)]=color
 
 def clear_rows():
+    fullrows = 0
     for row in range(rows):
         for column in range(columns):
             if grid[row * columns+column] == 0:
                 break
-            else:
-                del grid[row*columns : row * columns+column]
-                grid[0:0] = [0]*columns
+        else:
+            del grid[row * columns : row * columns+column]
+            grid[0:0] = [0]*columns
+            fullrows +=1
+    return fullrows*100   #set diem la 100 diem
 
 def drawGrid():
     blockSize = 40 
@@ -113,10 +118,12 @@ while status:
             if not character.update(1,0):
                 game_loop()
                 character = tetroromino(rd.choice(tetrorominos))
-                clear_rows()
+                score += clear_rows()
         if event.type == speedup:
-            speed = int (speed * 0.95)
-            pygame.time.set_timer(tetroromino_down,speed)
+            if score % 500 == 0:
+                speed = int (speed * 0.7)
+                pygame.time.set_timer(tetroromino_down,speed)
+                level += 1
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 character.update(0,-1)
