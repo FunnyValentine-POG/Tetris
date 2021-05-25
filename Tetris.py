@@ -56,20 +56,33 @@ class tetroromino():
                 x = (self.column + n % 4) * distance
                 y = (self.row + n // 4) * distance
                 screen.blit(picture[color],(x,y))
-                
-    def update(self,r,c):
-        self.row += r
-        self.column += c
 
+    def check_grid(self,r,c):
+        for n, color in enumerate(self.tetro):
+            if color>0:
+                rs = r + n//4
+                cs = c + n%4
+                if cs<0 or rs >=rows or cs >=columns or grid[rs * columns +cs]>0:
+                    return False
+        return True
+
+    def update(self,r,c):
+        if self.check_grid(self.row + r, self.column +c):
+            self.row += r
+            self.column += c
+            return True
+        return False
     def Rotation(self): #xoay cac khoi
         savetetro = self.tetro.copy()
         for n, color in enumerate(savetetro):
-            self.tetro[(2-(n%4))*4+(n//4)] = color 
+            self.tetro[(2-(n%4))*4+(n//4)] = color
+        if not self.check_grid(self.row, self.column):
+            self.tetro = savetetro.copy() 
 
 character = tetroromino(tetrorominos[2])
 
 def drawGrid():
-    blockSize = 40 #Set the size of the grid block
+    blockSize = 40 
     for x in range(0, width, blockSize):
         for y in range(0, height, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
