@@ -11,7 +11,7 @@ pygame.init()
 width, columns, rows = 400, 10, 20
 distance = width // columns
 height = distance*rows
-speed = 500
+speed = 800
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
 
@@ -28,8 +28,8 @@ pygame.display.set_caption('Tetris Game')
 tetroromino_down = pygame.USEREVENT +1
 speedup = pygame.USEREVENT +2
 pygame.time.set_timer(tetroromino_down,speed)
-pygame.time.set_timer(speedup,3000)
-pygame.key.set_repeat(500,500) #nhan key
+pygame.time.set_timer(speedup,5000)
+pygame.key.set_repeat(600,80) #nhan key #ben trai la delay, ben phai la interval (key_press)
 
 # tetrorominos: O, I, J, L, S, Z, T
 tetrorominos = [
@@ -79,7 +79,22 @@ class tetroromino():
         if not self.check_grid(self.row, self.column):
             self.tetro = savetetro.copy() 
 
-character = tetroromino(tetrorominos[2])
+
+character = tetroromino(rd.choice(tetrorominos))
+
+def game_loop():
+    for n,color in enumerate(character.tetro):
+        if color > 0:
+            grid[(character.row + n//4)*columns +(character.column+n%4)]=color
+
+def clear_rows():
+    for row in range(rows):
+        for column in range(columns):
+            if grid[row * columns+column] == 0:
+                break
+            else:
+                del grid[row*columns : row * columns+column]
+                grid[0:0] = [0]*columns
 
 def drawGrid():
     blockSize = 40 
@@ -95,9 +110,12 @@ while status:
         if event.type == pygame.QUIT:
             status = False
         if event.type == tetroromino_down:
-            character.update(1,0)
+            if not character.update(1,0):
+                game_loop()
+                character = tetroromino(rd.choice(tetrorominos))
+                clear_rows()
         if event.type == speedup:
-            speed = int (speed * 0.9)
+            speed = int (speed * 0.95)
             pygame.time.set_timer(tetroromino_down,speed)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
