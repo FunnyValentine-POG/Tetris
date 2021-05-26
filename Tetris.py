@@ -27,7 +27,7 @@ picture = []
 for n in range(8):
     picture.append(pygame.transform.scale(pygame.image.load(f'T_0/T_{n}.jpg'),(distance,distance)))
 
-# tạo khung (màng hình) trò chơi 
+# tạo khung (màn hình) trò chơi 
 screen = pygame.display.set_mode([width,height])
 pygame.display.set_caption('Tetris Game')
 
