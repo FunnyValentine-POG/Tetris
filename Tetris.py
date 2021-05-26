@@ -1,8 +1,10 @@
+import time
 from dataclasses import dataclass
 import pygame, sys
 from pygame import font
 from pygame.locals import *
 import random as rd
+from pygame.time import Clock
 from pygame import mixer
 
 global screen
@@ -19,7 +21,7 @@ grid = [0]*columns*rows
 #BGM
 music = mixer.music.load('BGM/Tetris.wav')
 mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.15)
+pygame.mixer.music.set_volume(0.2)
 
 #load picture 
 picture = []
@@ -31,16 +33,16 @@ screen = pygame.display.set_mode([width,height])
 pygame.display.set_caption('Tetris Game')
 
 #tạo sự kiện 
-tetromino_down = pygame.USEREVENT +1
+tetroromino_down = pygame.USEREVENT +1
 #speedup = pygame.USEREVENT +2
 
-pygame.time.set_timer(tetromino_down,speed)
+pygame.time.set_timer(tetroromino_down,speed)
 #pygame.time.set_timer(speedup,5000)
 
 pygame.key.set_repeat(600,80) #nhan key #ben trai la delay, ben phai la interval (key_press)
 
-# tetrominos: O, I, J, L, S, Z, T
-tetrominos = [
+# tetrorominos: O, I, J, L, S, Z, T
+tetrorominos = [
                 [0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0], # O
                 [0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0], # I
                 [0,0,0,0,3,3,3,0,0,0,3,0,0,0,0,0], # J
@@ -52,7 +54,7 @@ tetrominos = [
 
 # tạo lớp và định nghĩa hàm
 @dataclass
-class tetromino():
+class tetroromino():
     tetro : list 
     row : int = 0
     column : int = 4 # tọa độ (vị trí xuất hiện lần đầu)
@@ -88,7 +90,7 @@ class tetromino():
             self.tetro = savetetro.copy() 
 
 
-character = tetromino(rd.choice(tetrominos))
+character = tetroromino(rd.choice(tetrorominos))
 
 def game_loop():
     for n,color in enumerate(character.tetro):
@@ -108,11 +110,11 @@ def clear_rows():
     return fullrows**2*100   #set diem la 100 diem
 
 def clear_all_rows():
-    fullrows = 0
-    for row in range(rows):
+   for row in range(rows):
         for column in range(columns):
-            if grid[row * columns+column] == 0:
-                del grid[row * columns : row * columns+column]
+            del grid[row * columns : row * columns+column]
+            grid[0:0] = [0]*columns
+
 
 def drawGrid():
     blockSize = 40 
@@ -155,9 +157,8 @@ def gameover():
         bk = pygame.image.load(f'Game_background/B_3.jpg')    
         screen.blit(bk,(0,0))
         button((width//2 - 100), height*0.6 , 200, 89,'restart', Menu)
-        #status , over = True, False
-        #score, speed, level, level0 = 0, 1000, 1, 0
-        #clear_all_rows()
+       
+        
         pygame.display.update()
 
 pause = False
@@ -180,22 +181,26 @@ def Pause():
         pygame.display.update()
 
 def Play():
-    global status , score, speed, level, level0, character
+    global score, status, level, level0, speed, character
+    clear_all_rows()
+    score, speed, level, level0 = 0, 1000, 1, 0
+    status, over = True, False
+    
     while status:
         pygame.time.delay(10)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 status = False
-            if event.type == tetromino_down:
+            if event.type == tetroromino_down:
                 if not character.update(1,0):
                     game_loop()
                     score += clear_rows()
                     if score > 0 and score // 500 >= level and level0 != score:
                         speed = int (speed * 0.9)
-                        pygame.time.set_timer(tetromino_down,speed)
+                        pygame.time.set_timer(tetroromino_down,speed)
                         level = score // 500 + 1
                         level0 = score
-                    character = tetromino(rd.choice(tetrominos))
+                    character = tetroromino(rd.choice(tetrorominos))
                     
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
