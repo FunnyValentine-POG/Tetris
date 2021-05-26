@@ -4,7 +4,6 @@ import pygame, sys
 from pygame import font
 from pygame.locals import *
 import random as rd
-from pygame.time import Clock
 from pygame import mixer
 
 global screen
