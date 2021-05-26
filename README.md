@@ -5,7 +5,7 @@ Nếu để cho những khối hình cao quá màn hình, trò chơi sẽ kết 
 
 Trò chơi kết thúc khi khối gạch không rơi xuống được nữa.<br>
 
-Tất cả các Tetriminos có khả năng hoàn thành một và hai dòng. J, L có thể có ba. Chỉ có Tetrimino chữ I có khả năng để xóa bốn dòng cùng một lúc, và điều này được gọi là một “Tetris”. Xóa nhiều nhất chỉ được 4 hàng/1 lần.<br>
+Tất cả các Tetrominos có khả năng hoàn thành một và hai dòng. J, L có thể có ba. Chỉ có Tetrimino chữ I có khả năng để xóa bốn dòng cùng một lúc, và điều này được gọi là một “Tetris”. Xóa nhiều nhất chỉ được 4 hàng/1 lần.<br>
 
 Phím tắt:<br>
 
