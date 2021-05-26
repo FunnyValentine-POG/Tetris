@@ -120,7 +120,7 @@ def drawGrid():
     for x in range(0, width, blockSize):
         for y in range(0, height, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, (128,128,128), rect, 1)
+            pygame.draw.rect(screen, (28,28,28)	, rect, 1)
     
     
 def button(x, y, width, height,ahrefs, action):
@@ -160,7 +160,7 @@ def gameover():
         bk = pygame.image.load(f'Game_background/B_3.jpg')    
         screen.blit(bk,(0,0))
         button((width//2 - 100), height*0.6 , 200, 89,'restart', Menu)
-       
+        button((width//2 - 100), height*0.8 , 200, 89,'quit', quit_game)
         
         pygame.display.update()
 
@@ -180,8 +180,14 @@ def Pause():
                 status = False        
         bk = pygame.image.load(f'Game_background/B_2.jpg')    
         screen.blit(bk,(0,0))
-        button((width//2 - 100), height*0.6 , 200, 89,'pause', Resume)
+        button((width//2 - 100), height*0.4 , 200, 89,'pause', Resume)
+        button((width//2 - 100), height*0.6 , 200, 89,'quit', quit_game)
         pygame.display.update()
+
+def quit_game():
+    global status
+    status = False
+    pygame.quit()
 
 def Play():
     global score, status, level, level0, speed, character, over
@@ -219,13 +225,14 @@ def Play():
     
         gameover()
         # background color
-        screen.fill((0,0,0))
+        bk = pygame.image.load(f'Game_background/B.jpg')    
+        screen.blit(bk,(0,0))
         drawGrid()
         character.show()
         textsurface = pygame.font.SysFont('ComicSans',40).render("Score: "f'{score:,}',True,(255,255,255))
-        screen.blit(textsurface,(width//2 - textsurface.get_width()//2,30))
-        textsurface = pygame.font.SysFont('ComicSans',30).render("Level: "f'{level:,}',True,(255,255,255))
-        screen.blit(textsurface,(width//2 - textsurface.get_width()//2,5))
+        screen.blit(textsurface,(width//2 - textsurface.get_width()//2,35))
+        textsurface = pygame.font.SysFont('ComicSans',30).render("Level: "f'{level:,}',True,(176,224,230)	)
+        screen.blit(textsurface,(width//2 - textsurface.get_width()//2,15))
         #duyệt các khối màu
         for n, color in enumerate(grid):
             if color > 0:
@@ -244,7 +251,7 @@ def Menu():
                 bk = pygame.image.load(f'Game_background/B_1.jpg')    
                 screen.blit(bk,(0,0))
                 button((width//2 - 100), height*0.5, 200, 89,'play', Play)
-            
+                
         pygame.display.update()
 #Play()
 
