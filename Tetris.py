@@ -12,9 +12,10 @@ pygame.init()
 width, columns, rows = 400, 10, 20
 distance = width // columns
 height = distance*rows
-speed = 800
+speed = 1000
 score = 0
 level = 1
+level0 = 0
 #tạo lưới cho giao diện 
 grid = [0]*columns*rows
 #BGM
@@ -27,7 +28,7 @@ text = font.render("Game Over !", True, (255, 0, 0))
 
 def gameover():
 	for column in range(columns):			
-		if (grid[column]) > 0:
+		if (grid[column]) < 0:
 			screen.fill((0,0,0))		
 			screen.blit(text,(width//2 - text.get_width()//2,200))
 
@@ -42,9 +43,11 @@ pygame.display.set_caption('Tetris Game')
 
 #tạo sự kiện 
 tetroromino_down = pygame.USEREVENT +1
-speedup = pygame.USEREVENT +2
+#speedup = pygame.USEREVENT +2
+
 pygame.time.set_timer(tetroromino_down,speed)
-pygame.time.set_timer(speedup,5000)
+#pygame.time.set_timer(speedup,5000)
+
 pygame.key.set_repeat(600,80) #nhan key #ben trai la delay, ben phai la interval (key_press)
 
 # tetrorominos: O, I, J, L, S, Z, T
@@ -125,20 +128,22 @@ def drawGrid():
 
 status = True
 while status:
-    pygame.time.delay(100)
+    pygame.time.delay(10)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             status = False
         if event.type == tetroromino_down:
             if not character.update(1,0):
                 game_loop()
-                character = tetroromino(rd.choice(tetrorominos))
                 score += clear_rows()
+                if score > 0 and score // 500 >= level and level0 != score:
+                    speed = int (speed * 0.9)
+                    pygame.time.set_timer(tetroromino_down,speed)
+                    level = score // 500 + 1
+                    level0 = score
+                character = tetroromino(rd.choice(tetrorominos))
             gameover()
-        if event.type == speedup:
-            if score % 500 == 0 and score !=0:
-                speed = int (speed * 0.7)
-                pygame.time.set_timer(tetroromino_down,speed)
+            
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 character.update(0,-1)
@@ -152,8 +157,10 @@ while status:
     screen.fill((0,0,0))
     drawGrid()
     character.show()
-    textsurface = pygame.font.SysFont('ComicSans',30).render("Score: "f'{score:,}',True,(255,255,255))
-    screen.blit(textsurface,(width//2 - textsurface.get_width()//2,10))
+    textsurface = pygame.font.SysFont('ComicSans',40).render("Score: "f'{score:,}',True,(255,255,255))
+    screen.blit(textsurface,(width//2 - textsurface.get_width()//2,30))
+    textsurface = pygame.font.SysFont('ComicSans',30).render("Level: "f'{level:,}',True,(255,255,255))
+    screen.blit(textsurface,(width//2 - textsurface.get_width()//2,5))
     #duyệt các khối màu
     for n, color in enumerate(grid):
         if color > 0:
