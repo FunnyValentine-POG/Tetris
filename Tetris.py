@@ -1,4 +1,3 @@
-import time
 from dataclasses import dataclass
 import pygame, sys
 from pygame import font
@@ -20,7 +19,7 @@ grid = [0]*columns*rows
 #BGM
 music = mixer.music.load('BGM/Tetris.wav')
 mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.set_volume(0.15)
 
 #load picture 
 picture = []
@@ -32,16 +31,16 @@ screen = pygame.display.set_mode([width,height])
 pygame.display.set_caption('Tetris Game')
 
 #tạo sự kiện 
-tetroromino_down = pygame.USEREVENT +1
+tetromino_down = pygame.USEREVENT +1
 #speedup = pygame.USEREVENT +2
 
-pygame.time.set_timer(tetroromino_down,speed)
+pygame.time.set_timer(tetromino_down,speed)
 #pygame.time.set_timer(speedup,5000)
 
 pygame.key.set_repeat(600,80) #nhan key #ben trai la delay, ben phai la interval (key_press)
 
-# tetrorominos: O, I, J, L, S, Z, T
-tetrorominos = [
+# tetrominos: O, I, J, L, S, Z, T
+tetrominos = [
                 [0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0], # O
                 [0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0], # I
                 [0,0,0,0,3,3,3,0,0,0,3,0,0,0,0,0], # J
@@ -53,7 +52,7 @@ tetrorominos = [
 
 # tạo lớp và định nghĩa hàm
 @dataclass
-class tetroromino():
+class tetromino():
     tetro : list 
     row : int = 0
     column : int = 4 # tọa độ (vị trí xuất hiện lần đầu)
@@ -89,7 +88,7 @@ class tetroromino():
             self.tetro = savetetro.copy() 
 
 
-character = tetroromino(rd.choice(tetrorominos))
+character = tetromino(rd.choice(tetrominos))
 
 def game_loop():
     for n,color in enumerate(character.tetro):
@@ -187,16 +186,16 @@ def Play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 status = False
-            if event.type == tetroromino_down:
+            if event.type == tetromino_down:
                 if not character.update(1,0):
                     game_loop()
                     score += clear_rows()
                     if score > 0 and score // 500 >= level and level0 != score:
                         speed = int (speed * 0.9)
-                        pygame.time.set_timer(tetroromino_down,speed)
+                        pygame.time.set_timer(tetromino_down,speed)
                         level = score // 500 + 1
                         level0 = score
-                    character = tetroromino(rd.choice(tetrorominos))
+                    character = tetromino(rd.choice(tetrominos))
                     
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
