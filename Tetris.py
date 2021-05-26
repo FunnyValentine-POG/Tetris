@@ -137,7 +137,7 @@ while status:
                 game_loop()
                 score += clear_rows()
                 if score > 0 and score // 500 >= level and level0 != score:
-                    speed = int (speed * 0.9)
+                    speed = int (speed * 0.8)
                     pygame.time.set_timer(tetroromino_down,speed)
                     level = score // 500 + 1
                     level0 = score
