@@ -14,3 +14,11 @@ Phím mũi tên trái: di chuyển sang trái.<br>
 Phím mũi tên phải: di chuyển sang phải.<br>
 Phím mũi tên xuống: tăng tốc độ rơi.<br>
 
+
+##Tài Liệu:
+https://www.pygame.org/docs/ <br>
+https://www.geeksforgeeks.org/creating-start-menu-in-pygame/ <br>
+https://www.codegrepper.com/code-examples/python/grid+in+pygame <br>
+https://realpython.com/pygame-a-primer/ <br>
+
+
