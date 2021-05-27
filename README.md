@@ -13,6 +13,7 @@ Phím mũi tên lên: xoay khối.<br>
 Phím mũi tên trái: di chuyển sang trái.<br>
 Phím mũi tên phải: di chuyển sang phải.<br>
 Phím mũi tên xuống: tăng tốc độ rơi.<br>
+Phím Space: Pause Game. <br> 
 
 
 ##Tài Liệu: <br>
