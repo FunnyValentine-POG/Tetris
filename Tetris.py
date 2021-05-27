@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-import pygame, sys
+import pygame, sys, time 
 from pygame import font
 from pygame.locals import *
 import random as rd
-from pygame.time import Clock
 from pygame import mixer
 
 global screen
@@ -205,7 +204,7 @@ def Play():
                     game_loop()
                     score += clear_rows()
                     if score > 0 and score // 500 >= level and level0 != score:
-                        speed = int (speed * 0.9)
+                        speed = int (speed * 0.85)
                         pygame.time.set_timer(tetromino_down,speed)
                         level = score // 500 + 1
                         level0 = score
